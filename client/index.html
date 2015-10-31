@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Meteo data form 1662 to now days</title>
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+  </head>
+
+  <body>
+
+    <script src="js/react.js"> </script>
+    <script src="js/react-bootstrap.js"> </script>
+    <script src="js/react-dom.min.js"> </script>
+    <script src="js/browser.js"> </script>
+    <script src="https://www.google.com/jsapi"> </script>
+
+    <div id="content"> </div>
+
+    <script type="text/javascript">
+      google.load('visualization', '1.0', {'packages':['corechart']});
+    </script>
+    <script type="text/babel">
+      var Button = ReactBootstrap.Button;
+      var ButtonInput = ReactBootstrap.ButtonInput;
+      var ButtonToolbar = ReactBootstrap.ButtonToolbar;
+      var Panel = ReactBootstrap.Panel;
+      var Input = ReactBootstrap.Input;
+      var Row = ReactBootstrap.Row;
+      var Col = ReactBootstrap.Col;
+
+      var ChartPanel = React.createClass({
+  
+        getInitialState() {
+          this.data = new google.visualization.DataTable();
+          this.data.addColumn(
+            this.props.column1_type,
+            this.props.column1_label);
+          this.data.addColumn(
+            this.props.column2_type,
+            this.props.column2_label);
+
+          this.options = {
+            title: this.props.title,
+            width: this.props.width,
+            height: this.props.height
+          };
+
+          return {
+            comment: 'Chart placeholder'
+          };
+        },
+
+        setData(rows) {
+          this.data.addRows(rows);
+        },
+  
+        drawChart() {
+          var a = 0;
+          console.log('Start drawing')
+        },
+  
+        render() {
+          return (
+            <div> {this.options['title']} </div>
+          );
+        }
+      });
+
+      var DateInput = React.createClass({
+
+        getInitialState() {
+          return {
+            value: '01/1962'
+          };
+        },
+
+        validationState() {
+          return 'success';
+        },
+
+        handleChange() {
+          this.setState({
+            value: this.refs.input.getValue()
+          });
+        },
+
+        render() {
+          return (
+            <Input
+              type="text"
+              value={this.state.value}
+              placeholder="01/1962"
+              label={this.props.label}
+              help={this.props.help}
+              bsStyle={this.validationState()}
+              bsSize="small"
+              hasFeedback
+              ref="input"
+              groupClassName="group-class"
+              labelClassName="label-class"
+              onChange={this.handleChange} />
+          );
+        }
+      });
+
+
+      var Filter = React.createClass({
+
+        handleClick() {
+          if (this.props.onClick != null) {
+            this.props.onClick();
+          }
+        },
+
+        render() {
+          return (
+            <Panel header="Filter" bsStyle="primary">
+              <Row>
+                <Col xs={3}>
+                  <DateInput
+                    label="From date"
+                    name="from_date" />
+                </Col>
+                <Col xs={3}>
+                  <DateInput
+                    label="To date"
+                    name="to_date" />
+                </Col>
+                <Col xs={3}>
+                  <Input type="select"
+                       bsStyle="success"
+                       bsSize="small"
+                       label="Parameter"
+                       placeholder="select">
+                    <option value="temperature">Temperature</option>
+                    <option value="wind_speed">Wind speed</option>
+                  </Input>
+                </Col>
+                <Col xs={3}>
+                  <ButtonInput type="submit" onClick={this.handleClick}>Show</ButtonInput>
+                </Col>
+              </Row>
+            </Panel>
+          );}
+      });
+
+      var DataPanel = React.createClass({
+        getInitialState() {
+          return null;
+        },
+
+        handleClick() {
+          console.log('Clicked!')
+        },
+
+        componentDidMount() {
+          this.refs.chart.drawChart();
+        },
+
+        render() {
+          return (
+            <Panel>
+              <Filter onClick={this.handleClick}/>
+              <ChartPanel title="Plot something here ..."
+                ref="chart"
+                column1_type="datetime"
+                column1_label="Time"
+                column2_type="number"
+                column2_label="Value"/>
+            </Panel>
+          );}
+      });
+
+      var App = React.createClass({
+        render() {
+          return (
+            <Panel>
+              <Row>
+                <Col xs={6}>
+                  <DataPanel />
+                </Col>
+                <Col xs={6}>
+                  <DataPanel />
+                </Col>
+              </Row>
+            </Panel>
+          );}
+      });
+
+      ReactDOM.render(
+        <App />,
+        document.getElementById("content"));
+
+    </script>
+  </body>
+
+</html>
