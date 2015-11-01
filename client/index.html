@@ -7,17 +7,18 @@
 
     <title>Meteo data form 1662 to now days</title>
 
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
 
   </head>
 
   <body>
 
-    <script src="js/react.js"> </script>
-    <script src="js/react-bootstrap.js"> </script>
-    <script src="js/react-dom.min.js"> </script>
-    <script src="js/browser.js"> </script>
+    <script src="js/lib/react.js"> </script>
+    <script src="js/lib/react-bootstrap.js"> </script>
+    <script src="js/lib/react-dom.min.js"> </script>
+    <script src="js/lib/client.js"> </script>
+    <script src="js/lib/browser.js"> </script>
     <script src="https://www.google.com/jsapi"> </script>
 
     <div id="content"> </div>
@@ -155,8 +156,16 @@
           return null;
         },
 
-        handleClick() {
-          console.log('Clicked!')
+        handleData(error, query_result) {
+          console.log('Data came! => ' + error + result);
+        },
+
+        executeFilter() {
+          console.log('Clicked! ' + window.superagent)
+          request('GET', '/icoads/temperature')
+            .query({from_date: '1662-01-01'})
+            .query({to_date: '1661-02-01'})
+            .end(this.handleData(error, result))
         },
 
         componentDidMount() {
@@ -166,7 +175,7 @@
         render() {
           return (
             <Panel>
-              <Filter onClick={this.handleClick}/>
+              <Filter onClick={this.executeFilter}/>
               <ChartPanel title="Plot something here ..."
                 ref="chart"
                 column1_type="datetime"
